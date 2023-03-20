@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Миссия Колонизация Марса</h1>
+<h4>И на Марсе будут яблони цвести!</h4>
+{% if "инженер" in prof or "строитель" in prof %}
+    <h3>Инженерные тренажеры</h3>
+    <img src="{{ url_for('static', filename='img/it.jpeg') }}"
+         alt="здесь должна была быть картинка, но не нашлась"
+         width="450"
+         height="300">
+{% else %}
+    <h3>Научиные симуляторы</h3>
+    <img src="{{ url_for('static', filename='img/ns.jpeg') }}"
+         alt="здесь должна была быть картинка, но не нашлась"
+         width="450"
+         height="300">
+{% endif %}
+{% endblock %}
+

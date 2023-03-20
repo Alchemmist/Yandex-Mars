@@ -34,6 +34,6 @@ def add_news(db_sess: Session) -> None:
 
 
 if __name__ == '__main__':
-    global_init("db/blogs.db")
+    global_init("../db/blogs.db")
     db_sess = db_session.create_session()
     add_news(db_sess)
