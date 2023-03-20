@@ -1,4 +1,4 @@
 __pycache__
-db/blogs.db
-db/blogs.sqlite3
-db/blogs.sqlite
+*.db
+*.sqlite
+*.sqlite3
