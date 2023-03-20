@@ -1,6 +1,5 @@
 import json
 from flask import Flask,  render_template, redirect, request, abort
-from loginform import LoginForm
 from data import db_session
 from data.news import News
 from data.users import User
@@ -43,14 +42,6 @@ def index():
 @app.route('/odd_even')
 def odd_even():
     return render_template('odd_even.html', number=2)
-
-
-#@app.route('/news')
-#def news():
-#    with open("news_example.json", "rt", encoding="utf8") as f:
-#        news_list = json.loads(f.read())
-#    print(news_list)
-#    return render_template('news.html', news=news_list)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -163,5 +154,5 @@ def news_delete(id):
 
 
 if __name__ == '__main__':
-    db_session.global_init("db/blogs.db")
+    db_session.global_init("../db/blogs.db")
     app.run()

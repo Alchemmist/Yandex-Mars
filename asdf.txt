@@ -1,2 +1,0 @@
-Подключение к базе данных по адресу sqlite:///db/blogs.db?check_same_thread=False
-
