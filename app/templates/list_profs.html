@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h3>Список профессий</h3>
+{% if list_type == "ol" %}
+  <ol>
+  {% for i in profs_list %}
+    <li>{{i}}</li>
+  {% endfor %}
+  </ol>
+{% else %}
+  <ul>
+  {% for i in profs_list %}
+    <li>{{i}}</li>
+  {% endfor %}
+  </ul>
+{% endif %}
+</body>
+{% endblock %}
