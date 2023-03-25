@@ -4,14 +4,16 @@
 {% block content %}
 <head>
     <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="static/css/auto_answer.css"/>
 </head>
 <body>
-<h4>Фамилия:</h4>
-Имя</h4>
-Образование</h4>
-Профессия</h4>
-Пол</h4>
-Мотивация</h4>
-Готовы остаться на Марсе?</h4>
+    <h4>Фамилия: {{ surname }}</h4>
+    <h4>Имя: {{ name }}</h4>
+    <h4>Образование: {{ education }}</h4>
+    <h4>Профуссия: {{ profession }}</h4>
+    <h4>Пол: {{ sex }}</h4>
+    <h4>Мотивация: {{ motivation }}</h4>
+    <h4>Готовы остаться на Марсе?:{{ ready }}</h4>
 </body>
 {% endblock %}
