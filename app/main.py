@@ -5,6 +5,7 @@ from forms.user import LoginForm, RegisterForm
 from forms.job import AddJobForm
 from data.users import User
 from data.jobs import Jobs
+from datetime import datetime
 
 
 PATH_TO_DB = "../db/mars_explorer.db"
@@ -77,7 +78,7 @@ def auto_answer():
     return render_template('auto_answer.html', **content)
 
 
-# Двойная защита
+# Обработчик формы авторизации
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -88,7 +89,7 @@ def login():
 
         if (astro and astro.check_password(form.password_astro.data)) and \
         (cap and cap.check_password(form.password_cap.data)):
-            return redirect("/index")
+            return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
@@ -122,7 +123,7 @@ def table(male, age):
 
 
 # Форма регистрации
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
@@ -136,7 +137,7 @@ def register():
                                    form=form,
                                    message="Такой пользователь уже есть")
         user = User(
-            login=form.login.data,
+            email=form.login.data,
             name=form.name.data,
             surname=form.surename.data, 
             age=form.age.data, 
@@ -151,18 +152,30 @@ def register():
     return render_template('register.html', title='Регистрация', form=form)
 
 
+# Журнал работ
+@app.route('/')
+def list_jobs():
+    db_sess = create_session()
+    jobs = db_sess.query(Jobs).all()
+    return render_template("list_jobs.html", jobs=jobs)
+
+
 # Добавление работы (обработчик)
-@app.route('/add_job')
+@app.route('/add_job', methods=['GET', 'POST'])
 def add_job():
     form = AddJobForm()
     if form.validate_on_submit():
-        # db_sess = create_session()
-        #     # job = Jobs(
-        #     #     ...
-        #     # )
-        #     # db_sess.add(job)
-        #     # db_sess.commit()
-        return render_template('add_job.html', title='Adding a job', form=form)
+        db_sess = create_session()
+        job = Jobs(
+            team_leader=form.team_leader.data,
+            job=form.job_title.data,
+            work_size=form.work_size.data,
+            collaborators=form.collaborators.data,
+            is_finished=form.is_finished.data,
+        )
+        db_sess.add(job)
+        db_sess.commit()
+        return redirect('/')
     return render_template('add_job.html', title='Adding a job', form=form)
 
 
@@ -175,4 +188,3 @@ if __name__ == '__main__':
 
     global_init(PATH_TO_DB)
     app.run()
-
