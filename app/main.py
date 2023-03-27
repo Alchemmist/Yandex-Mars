@@ -1,12 +1,8 @@
-from flask import (
-        Flask, 
-        render_template, 
-        )
+from flask import Flask, render_template, redirect
 from data.db_session import global_init, create_session
-from data.use_db import (
-        add_colonials, 
-        add_jobs,
-        )
+from data.use_db import add_colonials, add_jobs
+from forms.user import LoginForm 
+from data.users import User
 
 
 PATH_TO_DB = "../db/mars_explorer.db"
@@ -77,6 +73,24 @@ def auto_answer():
         "ready": "True",
     }
     return render_template('auto_answer.html', **content)
+
+
+# Двойная защита
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        db_sess = create_session()
+        astro = db_sess.query(User).filter(User.id == form.id_astro.data).first()
+        cap = db_sess.query(User).filter(User.id == form.id_cap.data).first()
+
+        if (astro and astro.check_password(form.password_astro.data)) and \
+        (cap and cap.check_password(form.password_cap.data)):
+            return redirect("/index")
+        return render_template('login.html',
+                               message="Неправильный логин или пароль",
+                               form=form)
+    return render_template('login.html', title='Аворийный доступ', form=form)
 
 
 if __name__ == '__main__':

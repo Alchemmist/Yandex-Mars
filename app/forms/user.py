@@ -3,14 +3,16 @@ from wtforms import (
         PasswordField, 
         SubmitField, 
         EmailField, 
-        BooleanField
+        BooleanField,
+        StringField,
     )
 from wtforms.validators import DataRequired
 
 
-# Модель формы авторизации пользователя
 class LoginForm(FlaskForm):
-    email = EmailField('Почта', validators=[DataRequired()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
-    remember_me = BooleanField('Запомнить меня')
-    submit = SubmitField('Войти')
+    id_astro = StringField("id астронавта")
+    password_astro = PasswordField('Пароль астронавта', validators=[DataRequired()])
+    id_cap = StringField("id капитана")
+    password_cap = PasswordField("Пароль капитана", validators=[DataRequired()])
+
+    submit = SubmitField('Доступ')
