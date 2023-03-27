@@ -93,6 +93,23 @@ def login():
     return render_template('login.html', title='Аворийный доступ', form=form)
 
 
+# По каютам!
+@app.route('/distribution')
+def distribution():
+    content = {
+            "crew": [
+                "Ридли Скотт", 
+                "Эниди Уир", 
+                "Марк Уотни", 
+                "Венката Капур", 
+                "Тедди Сандерс", 
+                "Шон Бин",
+                ]
+    }
+    return render_template('distribution.html', **content)
+
+
+
 if __name__ == '__main__':
     # Добавить капитана и 3-х членов экипажа
     #add_colonials(PATH_TO_DB)
