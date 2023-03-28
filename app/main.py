@@ -109,6 +109,15 @@ def distribution():
     return render_template('distribution.html', **content)
 
 
+# Цвет каюты
+@app.route('/table/<male>/<int:age>')
+def table(male, age):
+    content = {
+            "male": male, 
+            "age": age,
+            }
+    return render_template('table.html', **content)
+
 
 if __name__ == '__main__':
     # Добавить капитана и 3-х членов экипажа

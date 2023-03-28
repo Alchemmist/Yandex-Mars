@@ -1,0 +1,40 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<head>
+
+</head>
+<body>
+    <h2>Офоромление каюты</h2>
+    <table>
+        <thead>
+            <tr bgcolor="lightgrey">
+                <th>Цвет стен</th>
+                <th>Эмблема</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                {% if male == "male" %}
+                    {% if age < 21 %}
+                        <td bgcolor="orange" style="width: 250px"></td>
+                        <td><img src="/static/img/chield_alein.jpeg"/></td>
+                    {% else %}
+                        <td bgcolor="red" style="width: 250px"></td>
+                        <td><img src="/static/img/old_alein.jpeg"/></td>
+                    {% endif %}
+                {% elif male == "female" %}
+                    {% if age < 21 %}
+                        <td bgcolor="lightblue" style="width: 250px"></td>
+                        <td><img src="/static/img/chield_alein.jpeg"/></td>
+                    {% else %}
+                        <td bgcolor="blue" style="width: 250px"></td>
+                        <td><img src="/static/img/old_alein.jpeg"/></td>
+                    {% endif %}
+                {% endif %}
+            </tr>
+        </tbody>
+    </table>
+</body>
+{% endblock %}
