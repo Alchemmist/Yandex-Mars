@@ -2,7 +2,9 @@ from flask import Flask, render_template, redirect
 from data.db_session import global_init, create_session
 from data.use_db import add_colonials, add_jobs
 from forms.user import LoginForm, RegisterForm
+from forms.job import AddJobForm
 from data.users import User
+from data.jobs import Jobs
 
 
 PATH_TO_DB = "../db/mars_explorer.db"
@@ -147,6 +149,21 @@ def register():
         db_sess.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
+
+
+# Добавление работы (обработчик)
+@app.route('/add_job')
+def add_job():
+    form = AddJobForm()
+    if form.validate_on_submit():
+        # db_sess = create_session()
+        #     # job = Jobs(
+        #     #     ...
+        #     # )
+        #     # db_sess.add(job)
+        #     # db_sess.commit()
+        return render_template('add_job.html', title='Adding a job', form=form)
+    return render_template('add_job.html', title='Adding a job', form=form)
 
 
 if __name__ == '__main__':
