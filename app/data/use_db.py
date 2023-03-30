@@ -3,6 +3,7 @@ from data import users, jobs
 from datetime import date
 from data.users import User
 from data.jobs import Jobs
+from sqlalchemy import func
 
 
 # Добавляем капитана
