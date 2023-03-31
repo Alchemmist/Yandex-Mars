@@ -3,22 +3,11 @@ from data import users, jobs
 from datetime import date
 from data.users import User
 from data.jobs import Jobs
-from sqlalchemy import func
 
 
 # Добавляем капитана
 def add_colonials(path_to_db: str) -> None:
-    """Добавляет капитана и 3-х членов экипажа в таблицу users
-
-    Parameters
-    ----------
-    path_to_db: str
-        Путь до файла с sqlite базой данных
-
-    Returns
-    -------
-    None
-    """
+    """Добавляет капитана и 3-х членов экипажа в таблицу users"""
 
     global_init(path_to_db)
     db_sess = create_session()
@@ -82,15 +71,6 @@ def add_colonials(path_to_db: str) -> None:
 def add_jobs(path_to_db: str) -> None:
     """Добавляет задание на развертывание жилых
     модулей 1 и 2 для экипажа в таблицу jobs
-
-    Parameters
-    ----------
-    path_to_db: str
-        Путь до файла с sqlite базой данных
-
-    Returns
-    -------
-    None
     """
 
     global_init(path_to_db)
@@ -110,17 +90,7 @@ def add_jobs(path_to_db: str) -> None:
 
 # Запрос 1
 def get_colonials(path_to_db: str) -> None:
-    """Выводит всех колонистов проживающих в 1 модуле
-
-    Parameters
-    ----------
-    path_to_db: str
-        Путь до файла с sqlite базой данных
-
-    Returns
-    -------
-    None
-    """
+    """Выводит всех колонистов проживающих в 1 модуле"""
 
     global_init(path_to_db)
     db_sess = create_session()
@@ -133,15 +103,6 @@ def get_no_engineer_colonials(db_name: str) -> None:
     """Выводит id колонистов проживающих в 1 модуле,
     ни профессия (speciality), ни должность (position)
     которых не содержат подстроку engineer
-
-    Parameters
-    ----------
-    path_to_db: str
-        Путь до файла с sqlite базой данных
-
-    Returns
-    -------
-    None
     """
 
     global_init(db_name)
@@ -158,15 +119,6 @@ def get_no_engineer_colonials(db_name: str) -> None:
 def get_child(path_to_db: str) -> None:
     """Выводит всех несовершеннолетних (возраст меньше 18)
     колонистов с указанием возраста в годах
-
-    Parameters
-    ----------
-    path_to_db: str
-        Путь до файла с sqlite базой данных
-
-    Returns
-    -------
-    None
     """
 
     global_init(path_to_db)
@@ -181,15 +133,6 @@ def get_child(path_to_db: str) -> None:
 def get_chief_middle(path_to_db: str) -> None:
     """Выводит колонистов, у которых в названии должности
     есть chief или middle, каждого с новой строки.
-
-    Parameters
-    ----------
-    path_to_db: str
-        Путь до файла с sqlite базой данных
-
-    Returns
-    -------
-    None
     """
 
     global_init(path_to_db)
@@ -204,15 +147,6 @@ def get_chief_middle(path_to_db: str) -> None:
 def get_job_less_20(path_to_db: str) -> None:
     """Выводит работы, выполнение которых требует меньше 20 часов и
     которые еще не закончены, каждую с новой строки.
-
-    Parameters
-    ----------
-    path_to_db: str
-        Путь до файла с sqlite базой данных
-
-    Returns
-    -------
-    None
     """
 
     global_init(path_to_db)
@@ -223,22 +157,25 @@ def get_job_less_20(path_to_db: str) -> None:
 
 # Запрос 6
 def get_teamleader(path_to_db: str) -> None:
-    """Выводит фамилии и имена тимлидов тех работ, 
+    """Выводит фамилии и имена тимлидов тех работ,
     которые выполняются наибольшими командами.
-
-    Parameters
-    ----------
-    path_to_db: str
-        Путь до файла с sqlite базой данных
-
-    Returns
-    -------
-    None
     """
 
     global_init(path_to_db)
     db_sess = create_session()
-    for user, job in db_sess.query(User, Jobs).all():
-        if len(job.collaborators) > maxi:
-            ...
-        print(user.surname, user.name)
+    for user, job in db_sess.query(User, Jobs).filter(...):
+        ...
+
+
+# Запрос 7
+def relocation(path_to_db: str) -> None:
+    """Изменяет всем, проживающим в модуле 1 и имеющим возраст
+    менее 21 года, адрес на module_3"""
+
+    global_init(path_to_db)
+    db_sess = create_session()
+    for user in db_sess.query(User).filter(
+        User.address.ilike("module_1"), User.age < 21
+    ):
+        user.address = "module_3"
+        db_sess.commit()
