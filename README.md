@@ -4,7 +4,7 @@ Web приложение, созданное на 2-ом курсе Лицея �
 ## Запуск 🚀
 1. Клонируйте репозиторий
 ```shell
-git clone <https://github.com/Alchemmist/Yandex-Mars.git>
+git clone https://github.com/Alchemmist/Yandex-Mars.git
 ```
 
 2. Перейдите в директорию проекта
