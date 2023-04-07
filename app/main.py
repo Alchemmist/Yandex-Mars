@@ -1,11 +1,18 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request, abort
 from data.db_session import global_init, create_session
 from data.use_db import add_colonials, add_jobs
 from forms.user import LoginForm, RegisterForm
-from forms.job import AddJobForm
+from forms.job import JobForm
 from data.users import User
 from data.jobs import Jobs
 from datetime import datetime
+from flask_login import (
+        LoginManager, 
+        login_user, 
+        login_required, 
+        logout_user,
+        current_user,
+    )
 
 
 PATH_TO_DB = "../db/mars_explorer.db"
@@ -13,6 +20,16 @@ PATH_TO_DB = "../db/mars_explorer.db"
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    db_sess = create_session()
+    return db_sess.query(User).get(user_id)
 
 
 # Готовимся к миссии
@@ -78,17 +95,23 @@ def auto_answer():
     return render_template('auto_answer.html', **content)
 
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
+
+
 # Обработчик формы авторизации
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         db_sess = create_session()
-        astro = db_sess.query(User).filter(User.id == form.id_astro.data).first()
-        cap = db_sess.query(User).filter(User.id == form.id_cap.data).first()
+        user = db_sess.query(User).filter(User.email == form.email.data).first()
 
-        if (astro and astro.check_password(form.password_astro.data)) and \
-        (cap and cap.check_password(form.password_cap.data)):
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
             return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
@@ -157,13 +180,14 @@ def register():
 def list_jobs():
     db_sess = create_session()
     jobs = db_sess.query(Jobs).all()
-    return render_template("list_jobs.html", jobs=jobs)
+    return render_template("index.html", jobs=jobs)
 
 
 # Добавление работы (обработчик)
-@app.route('/add_job', methods=['GET', 'POST'])
+@app.route('/add_jobs', methods=['GET', 'POST'])
+@login_required
 def add_job():
-    form = AddJobForm()
+    form = JobForm()
     if form.validate_on_submit():
         db_sess = create_session()
         job = Jobs(
@@ -177,6 +201,55 @@ def add_job():
         db_sess.commit()
         return redirect('/')
     return render_template('add_job.html', title='Adding a job', form=form)
+
+
+@app.route("/edit_jobs/<int:id>", methods=["GET", "POST"])
+@login_required
+def edit_jobs(id):
+    form = JobForm()
+    if request.method == "GET":
+        db_sess = create_session()
+        jobs = (
+            db_sess.query(Jobs).filter(Jobs.id == id, Jobs.user == current_user).first()
+        )
+        if jobs:
+            form.team_leader.data = jobs.team_leader
+            form.job_title.data = jobs.job
+            form.work_size.data = jobs.work_size
+            form.collaborators.data = jobs.collaborators
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = create_session()
+        jobs = (
+            db_sess.query(Jobs).filter(Jobs.id == id, Jobs.user == current_user).first()
+        )
+        if jobs:
+            jobs.team_leader = form.team_leader.data
+            jobs.job = form.job_title.data
+            jobs.work_size = form.work_size.data
+            jobs.collaborators = form.collaborators.data
+            jobs.is_finished = form.is_finished.data
+
+            db_sess.commit()
+            return redirect("/")
+        else:
+            abort(404)
+    return render_template("add_job.html", title="Edit", form=form)
+
+
+@app.route('/jobs_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def jobs_delete(id):
+    db_sess = create_session()
+    jobs = db_sess.query(Jobs).filter(Jobs.id == id,
+                                      Jobs.user == current_user).first()
+    if jobs:
+        db_sess.delete(jobs)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/')
 
 
 if __name__ == '__main__':

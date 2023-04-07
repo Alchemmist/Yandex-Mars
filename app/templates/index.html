@@ -2,6 +2,9 @@
 
 {% block content %}
 <h4>Works log</h4>
+{% if current_user.is_authenticated %}
+    <a href="/add_jobs" class="btn btn-secondary">Add job</a>
+{% endif %}
 
 {% for item in jobs %}
     <h5>Action #{{ item.id }}</h5>
@@ -22,12 +25,22 @@
                 <td bgcolor="#EDE3FF">{{ item.work_size }}</td>
                 <td bgcolor="#EDE3FF">{{ item.collaborators }}</td>
                 {% if item.is_finished %}
-                    <td bgcolor="#FFD6E8">is finished</td>
+                    <td bgcolor="#90EE90">is finished</td>
                 {% else %}
                     <td bgcolor="#FFD6E8">is not finished</td>
                 {% endif %}
             </tr>
         </tbody>
     </table>
+    {% if current_user.is_authenticated and current_user == item.user %}
+        <div>
+            <a href="/edit_jobs/{{ item.id }}" class="btn btn-warning">
+                Edit
+            </a>
+            <a href="/jobs_delete/{{ item.id }}" class="btn btn-danger">
+                Delete
+            </a>
+        </div>
+    {% endif %}
 {% endfor %}
 {% endblock %}

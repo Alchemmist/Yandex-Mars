@@ -4,11 +4,19 @@ from wtforms import (
         SubmitField, 
         BooleanField,
         StringField,
+        EmailField,
     )
 from wtforms.validators import DataRequired
 
 
 class LoginForm(FlaskForm):
+    email = EmailField('Почта', validators=[DataRequired()])
+    password = PasswordField('Пароль', validators=[DataRequired()])
+    remember_me = BooleanField('Запомнить меня')
+    submit = SubmitField('Войти')
+
+
+class WarningForm(FlaskForm):
     id_astro = StringField("id астронавта")
     password_astro = PasswordField('Пароль астронавта', validators=[DataRequired()])
     id_cap = StringField("id капитана")

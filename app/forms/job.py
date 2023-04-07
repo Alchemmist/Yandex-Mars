@@ -8,7 +8,7 @@ from wtforms import (
 
 
 # Добавление работы (модель)
-class AddJobForm(FlaskForm):
+class JobForm(FlaskForm):
     team_leader = StringField("Team Leader id")
     job_title = StringField('Job Title')
     work_size = StringField("Work Size")
