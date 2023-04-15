@@ -1,11 +1,13 @@
 import datetime
+
+from sqlalchemy_serializer import SerializerMixin
 import sqlalchemy
 from sqlalchemy import orm
 
 from .db_session import SqlAlchemyBase
 
 
-class News(SqlAlchemyBase):
+class News(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'news'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, 
@@ -22,3 +24,4 @@ class News(SqlAlchemyBase):
     categories = orm.relationship("Category",
                           secondary="association",
                           backref="news")
+    is_published = sqlalchemy.Column(sqlalchemy.Boolean, default=True)

@@ -1,24 +1,51 @@
-import json
-from flask import Flask,  render_template, redirect, request, abort
-from data import db_session
+import news_resources
+from data import db_session, news_api
 from data.news import News
 from data.users import User
 from forms.user import RegisterForm, LoginForm
 from forms.news import NewsForm
+
+from flask import (
+        Flask, 
+        render_template, 
+        redirect, 
+        request, 
+        abort, 
+        make_response, 
+        jsonify,
+)
 from flask_login import (
         LoginManager, 
         login_user, 
         login_required, 
         logout_user,
         current_user,
-    )
+)
+from flask_restful import abort, Api
 
 
 app = Flask(__name__)
+api = Api(app)
+
+api.add_resource(news_resources.NewsListResource, '/api/v2/news') 
+api.add_resource(news_resources.NewsResource, '/api/v2/news/<int:news_id>')
+
+
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+@app.errorhandler(400)
+def bad_request(_):
+    return make_response(jsonify({'error': 'Bad Request'}), 400)
 
 
 @login_manager.user_loader
@@ -153,6 +180,11 @@ def news_delete(id):
     return redirect('/')
 
 
-if __name__ == '__main__':
+def main():
     db_session.global_init("../db/blogs.db")
+    #app.register_blueprint(news_api.blueprint)
     app.run()
+
+
+if __name__ == '__main__':
+    main()

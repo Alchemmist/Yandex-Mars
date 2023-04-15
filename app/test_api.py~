@@ -1,0 +1,7 @@
+from requests import get
+import json
+
+
+with open("test_result.json", mode='w', encoding='utf-8') as f:
+    request_result = get('http://localhost:5000/api/news').json()
+    json.dump(request_result, f)
