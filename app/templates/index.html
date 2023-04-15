@@ -32,7 +32,7 @@
             </tr>
         </tbody>
     </table>
-    {% if current_user.is_authenticated and current_user == item.user %}
+    {% if current_user.is_authenticated and (current_user == item.user or current_user.speciality == 'capitan') %}
         <div>
             <a href="/edit_jobs/{{ item.id }}" class="btn btn-warning">
                 Edit

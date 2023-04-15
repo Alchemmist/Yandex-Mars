@@ -218,6 +218,7 @@ def edit_jobs(id):
             form.job_title.data = jobs.job
             form.work_size.data = jobs.work_size
             form.collaborators.data = jobs.collaborators
+            form.is_finished.data = jobs.is_finished
         else:
             abort(404)
     if form.validate_on_submit():
