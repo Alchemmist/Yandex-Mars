@@ -69,7 +69,7 @@ def create_jobs():
 
 
 # Удаление работы
-@blueprint.route('/api/jobs/<int:news_id>', methods=['DELETE'])
+@blueprint.route('/api/jobs/<int:job_id>', methods=['DELETE'])
 def delete_news(job_id):
     db_sess = db_session.create_session()
     jobs = db_sess.query(Jobs).get(job_id)

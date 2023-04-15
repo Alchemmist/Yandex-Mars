@@ -1,3 +1,4 @@
+from data import jobs_api
 from flask import Flask, render_template, redirect, request, abort
 from data.db_session import global_init, create_session
 from data.use_db import add_colonials, add_jobs
@@ -252,12 +253,18 @@ def jobs_delete(id):
     return redirect('/')
 
 
-if __name__ == '__main__':
+def main():
+    global_init(PATH_TO_DB)
+
     # Добавить капитана и 3-х членов экипажа
     #add_colonials(PATH_TO_DB)
 
     # Добавить задание на развертывание жилых модулей
     #add_jobs(PATH_TO_DB)
 
-    global_init(PATH_TO_DB)
+    app.register_blueprint(jobs_api.blueprint)
     app.run()
+
+
+if __name__ == '__main__':
+    main()
