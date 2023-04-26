@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+    <a href="/" class="btn btn-secondary">Вернуться к работам</a>
+    <a href="add_department" class="btn btn-secondary">Добавить департамент</a>
+{% endif %}
+<h1 align="center">Департаменты</h1>
+{% for item in departments%}
+{% if current_user.is_authenticated and current_user.id in (1, item.chief) %}
+    <div>
+        <a href="/add_department/{{ item.id }}" class="btn btn-warning">
+            Изменить
+        </a>
+        <a href="/department_delete/{{ item.id }}" class="btn btn-danger">
+            Удалить
+        </a>
+    </div>
+{% endif %}
+<h1>Департамент {{ item.id }}</h1>
+    <table>
+        <thead>
+            <tr bgcolor="lightgrey">
+                <th style="width: 40%;">название департамента</th>
+                <th style="width: 15%;">главный</th>
+                <th style="width: 15%;">участники</th>
+                <th style="width: 15%;">email</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td bgcolor="#EDE3FF">{{ item.title }}</td>
+                <td bgcolor="#EDE3FF">{{ item.chief}}</td>
+                <td bgcolor="#EDE3FF">{{ item.members }}</td>
+                <td bgcolor="#EDE3FF">{{ item.email }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endfor %}
+{% endblock %}

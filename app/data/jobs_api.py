@@ -45,24 +45,25 @@ def get_jobs_by_id(job_id):
 
 # Добавление работы
 @blueprint.route('/api/jobs', methods=['POST'])
-def create_jobs():
+def create_job():
     if not request.json:
         return jsonify({'error': 'Empty request'})
-
     elif not all(key in request.json for key in
-                 ['team_leader', 'job', 'work_size', 'collaborators', 'start_date',
-                  'end_date', 'is_finished', 'user']):
-        return jsonify({'error': 'Bad request'})\
+                 ['id', 'team_leader', 'job', 'work_size', 'collaborators', 'is_finished']):
+        return jsonify({'error': 'Bad request'})
 
     db_sess = db_session.create_session()
+    job = db_sess.query(Jobs).filter(Jobs.id == request.json['id']).first()
+
+    if job:
+        return jsonify({'error': 'Id already exists'})
 
     job = Jobs(
+        id=request.json['id'],
         team_leader=request.json['team_leader'],
         job=request.json['job'],
         work_size=request.json['work_size'],
         collaborators=request.json['collaborators'],
-        start_date=request.json['start_date'],
-        end_date=request.json['end_date'],
         is_finished=request.json['is_finished']
     )
     db_sess.add(job)
@@ -84,26 +85,20 @@ def delete_job(job_id):
 
 # Редактирование работы
 @blueprint.route('/api/jobs/<int:job_id>', methods=['PUT'])
-def edit_jobs(job_id):
+def edit_job():
     if not request.json:
         return jsonify({'error': 'Empty request'})
-
     elif not all(key in request.json for key in
-                 ['team_leader', 'job', 'work_size', 'collaborators', 'start_date',
-                  'end_date', 'is_finished', 'user']):
+                 ['id', 'team_leader', 'job', 'work_size', 'collaborators', 'is_finished']):
         return jsonify({'error': 'Bad request'})
-
     db_sess = db_session.create_session()
-    job = db_sess.query(Jobs).get(job_id)
-    print(job, '🎈🎈🎈🎈')
-    job.team_leader=request.json['team_leader'],
-    job.job=request.json['job'],
-    job.work_size=request.json['work_size'],
-    job.collaborators=request.json['collaborators'],
-    job.start_date=request.json['start_date'],
-    job.end_date=request.json['end_date'],
-    job.is_finished=request.json['is_finished']
-
-    db_sess.merge(job)
-    db_sess.commit()
-    return jsonify({'success': 'OK'})
+    job = db_sess.query(Jobs).filter(Jobs.id == request.json['id']).first()
+    if job:
+        job.team_leader = request.json['team_leader'],
+        job.job = request.json['job']
+        job.work_size = request.json['work_size']
+        job.collaborators = request.json['collaborators']
+        job.is_finished = request.json['is_finished']
+        db_sess.commit()
+        return jsonify({'success': 'OK'})
+    return jsonify({'error': 'Bad request'})
