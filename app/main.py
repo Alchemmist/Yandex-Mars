@@ -1,5 +1,6 @@
 from data import jobs_api
 from flask import Flask, render_template, redirect, request, abort
+from flask_restful import Api
 from data.db_session import global_init, create_session
 from data.use_db import add_colonials, add_jobs
 from forms.user import LoginForm, RegisterForm
@@ -16,6 +17,8 @@ from flask_login import (
         logout_user,
         current_user,
     )
+import users_resource
+import jobs_resource
 
 
 PATH_TO_DB = "../db/mars_explorer.db"
@@ -23,6 +26,7 @@ PATH_TO_DB = "../db/mars_explorer.db"
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+api = Api(app)
 
 
 login_manager = LoginManager()
@@ -319,13 +323,12 @@ def department_delete(department_id):
 
 
 def main():
+    api.add_resource(users_resource.UsersListResource, '/api/v2/users')
+    api.add_resource(users_resource.UsersResource, '/api/v2/users/<int:user_id>')
+    api.add_resource(jobs_resource.JobsListResource, '/api/v2/jobs')
+    api.add_resource(jobs_resource.JobsResource, '/api/v2/jobs/<int:job_id>')
+
     global_init(PATH_TO_DB)
-
-    # Добавить капитана и 3-х членов экипажа
-    #add_colonials(PATH_TO_DB)
-
-    # Добавить задание на развертывание жилых модулей
-    #add_jobs(PATH_TO_DB)
 
     app.register_blueprint(jobs_api.blueprint)
     app.run()
