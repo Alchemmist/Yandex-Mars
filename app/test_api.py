@@ -98,3 +98,20 @@ print(delete('http://localhost:5000/api/v2/users/1').json())
 print(get('http://localhost:5000/api/v2/users/999').json())
 print(delete('http://localhost:5000/api/v2/users/999').json())
 """
+
+# TEST 6 --------------------------------
+"""
+print(get('http://localhost:5000/api/v2/jobs').json())
+print(get('http://localhost:5000/api/v2/jobs/1').json())
+print(post('http://localhost:5000/api/v2/jobs', json={"team_leader": 1, 
+                                                       "job": "BIG job", 
+                                                       "work_size": 100, 
+                                                       "collaborators": 'a, b, b', 
+                                                       "start_date": "12.09.2022", 
+                                                       "end_date": "12.10.2022", 
+                                                       "is_finished": True, }).json())
+print(delete('http://localhost:5000/api/v2/jobs/1').json())
+
+print(get('http://localhost:5000/api/v2/jobs/999').json())
+print(delete('http://localhost:5000/api/v2/jobs/999').json())
+"""
